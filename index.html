@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gregorio Visocchi Labs — Suggestio Mio</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;700&family=Orbitron:wght@400;700;900&display=swap');
+
+    :root {
+      --cyan:   #00D9FF;
+      --orange: #FF8C00;
+      --pink:   #FF4D6D;
+      --bg:     #0A0A0F;
+      --card:   #12121A;
+      --border: #1E1E2E;
+      --text:   #E0E0F0;
+      --muted:  #7A7A9A;
+    }
+
+    body.light {
+      --cyan:   #0099BB;
+      --orange: #C96A00;
+      --pink:   #C0294A;
+      --bg:     #EEF1F8;
+      --card:   #FFFFFF;
+      --border: #D0D5E8;
+      --text:   #1A1A2E;
+      --muted:  #6B7280;
+    }
+
+    body.light {
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0,153,187,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(192,41,74,0.05) 0%, transparent 60%);
+    }
+
+    body.light .card::after {
+      background-image:
+        linear-gradient(rgba(0,153,187,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,153,187,0.04) 1px, transparent 1px);
+    }
+
+    body.light .lang-btn {
+      background: #E2E7F4;
+      border-color: #C4CBE0;
+    }
+
+    body.light .dev-bio {
+      background: rgba(201,106,0,0.06);
+    }
+
+    body.light .feature-tag {
+      background: rgba(0,153,187,0.08);
+    }
+
+    body.light .play-btn {
+      background: rgba(0,153,187,0.09);
+      border-color: rgba(0,153,187,0.35);
+    }
+
+    body.light .play-btn:hover {
+      background: rgba(0,153,187,0.17);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Roboto Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0,217,255,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(255,77,109,0.06) 0%, transparent 60%);
+    }
+
+    /* ── Language Switcher ── */
+    .lang-switcher {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+
+    .lang-btn {
+      background: var(--border);
+      color: var(--muted);
+      border: 1px solid #2a2a3e;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.05em;
+    }
+
+    .lang-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+    .lang-btn.active {
+      background: rgba(0,217,255,0.12);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    /* ── Card ── */
+    .card {
+      width: 100%;
+      max-width: 580px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 36px 32px 30px;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(0,217,255,0.04),
+        0 8px 40px rgba(0,0,0,0.6),
+        0 0 80px rgba(0,217,255,0.04);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--pink), var(--orange));
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,217,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,217,255,0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+
+    /* ── Developer header ── */
+    .header {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-wrap {
+      width: 64px;
+      height: 64px;
+      border-radius: 14px;
+      background: rgba(0,217,255,0.08);
+      border: 1px solid rgba(0,217,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 1.3rem;
+      color: var(--cyan);
+      text-shadow: 0 0 12px rgba(0,217,255,0.6);
+    }
+
+    .title-block { flex: 1; }
+
+    .dev-name {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--cyan);
+      letter-spacing: 0.04em;
+      text-shadow: 0 0 16px rgba(0,217,255,0.4);
+      line-height: 1.2;
+    }
+
+    .dev-sub {
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    /* ── Developer bio ── */
+    .dev-bio {
+      position: relative;
+      z-index: 1;
+      font-size: 0.78rem;
+      color: var(--text);
+      line-height: 1.65;
+      margin-bottom: 22px;
+      padding: 14px 16px;
+      background: rgba(255,140,0,0.05);
+      border-left: 3px solid var(--orange);
+      border-radius: 0 8px 8px 0;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      position: relative;
+      z-index: 1;
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 20px 0;
+    }
+
+    /* ── App section ── */
+    .app-section {
+      position: relative;
+      z-index: 1;
+    }
+
+    .app-header {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .app-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .app-name span { color: var(--cyan); }
+
+    .app-badge {
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      color: var(--orange);
+      border: 1px solid rgba(255,140,0,0.35);
+      border-radius: 4px;
+      padding: 2px 7px;
+      text-transform: uppercase;
+    }
+
+    .app-tagline {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      font-style: italic;
+    }
+
+    .app-desc {
+      font-size: 0.78rem;
+      color: var(--text);
+      line-height: 1.65;
+      margin-bottom: 16px;
+    }
+
+    /* ── Feature tags ── */
+    .features-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+
+    .feature-tag {
+      font-size: 0.65rem;
+      color: var(--cyan);
+      background: rgba(0,217,255,0.07);
+      border: 1px solid rgba(0,217,255,0.2);
+      border-radius: 5px;
+      padding: 3px 9px;
+    }
+
+    /* ── Play Store button ── */
+    .play-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,217,255,0.1);
+      border: 1px solid rgba(0,217,255,0.35);
+      border-radius: 8px;
+      padding: 9px 16px;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--cyan);
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .play-btn:hover {
+      background: rgba(0,217,255,0.18);
+      border-color: var(--cyan);
+    }
+
+    .play-btn-icon { font-size: 1rem; }
+
+    /* ── Contact ── */
+    .contact {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.75rem;
+    }
+
+    .contact-icon { width: 20px; text-align: center; font-size: 0.9rem; flex-shrink: 0; }
+    .contact-label { color: var(--muted); width: 52px; flex-shrink: 0; }
+    .contact-value { color: var(--text); }
+    .contact-value a { color: var(--cyan); text-decoration: none; }
+    .contact-value a:hover { text-decoration: underline; }
+
+    /* ── Footer ── */
+    .card-footer {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-tagline {
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      font-style: italic;
+    }
+
+    .footer-copy {
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .dots { display: flex; gap: 5px; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; }
+
+    /* ── Theme toggle ── */
+    .theme-btn {
+      background: var(--border);
+      color: var(--muted);
+      border: 1px solid #2a2a3e;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      line-height: 1;
+    }
+
+    .theme-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    body.light .theme-btn { border-color: #C4CBE0; }
+  </style>
+</head>
+<body>
+
+<div class="lang-switcher">
+  <button class="lang-btn active" onclick="setLang('pl')">PL</button>
+  <button class="lang-btn" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" onclick="setLang('fr')">FR</button>
+  <button class="lang-btn" onclick="setLang('de')">DE</button>
+  <button class="lang-btn" onclick="setLang('es')">ES</button>
+  <button class="lang-btn" onclick="setLang('pt')">PT</button>
+  <button class="lang-btn" onclick="setLang('it')">IT</button>
+  <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Przełącz motyw">☀</button>
+</div>
+
+<div class="card">
+
+  <!-- Developer header -->
+  <div class="header">
+    <div class="logo-wrap">GVL</div>
+    <div class="title-block">
+      <div class="dev-name">Gregorio Visocchi Labs</div>
+      <div class="dev-sub" id="dev-sub"></div>
+    </div>
+  </div>
+
+  <!-- Developer bio -->
+  <div class="dev-bio" id="dev-bio"></div>
+
+  <hr class="divider" />
+
+  <!-- App section -->
+  <div class="app-section">
+    <div class="app-header">
+      <div class="app-name"><span>Suggestio</span> Mio</div>
+      <div class="app-badge" id="app-badge"></div>
+    </div>
+    <div class="app-tagline" id="app-tagline"></div>
+    <div class="app-desc" id="app-desc"></div>
+
+    <div class="features-label" id="features-label"></div>
+    <div class="features" id="features"></div>
+
+    <a id="play-btn" class="play-btn" href="" target="_blank" rel="noopener">
+      <span class="play-btn-icon">▶</span>
+      <span id="play-btn-text"></span>
+    </a>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- Contact -->
+  <div class="contact">
+    <div class="contact-row">
+      <div class="contact-icon">✉</div>
+      <div class="contact-label" id="lbl-email"></div>
+      <div class="contact-value">
+        <a href="mailto:gregoriovisocchilabs@gmail.com">gregoriovisocchilabs@gmail.com</a>
+      </div>
+    </div>
+    <div class="contact-row">
+      <div class="contact-icon">▶</div>
+      <div class="contact-label" id="lbl-store"></div>
+      <div class="contact-value">Google Play Store</div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <div>
+      <div class="footer-tagline" id="footer-tagline"></div>
+      <div class="footer-copy">© 2026 Gregorio Visocchi Labs</div>
+    </div>
+    <div class="dots">
+      <div class="dot" style="background:var(--cyan)"></div>
+      <div class="dot" style="background:var(--orange)"></div>
+      <div class="dot" style="background:var(--pink)"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const data = {
+    pl: {
+      devSub:       "NIEZALEŻNY DEWELOPER APLIKACJI MOBILNYCH\nFlutter · Android · Google Play",
+      devBio:       "Tworzę aplikacje mobilne, które rozwiązują prawdziwe, codzienne problemy — takie, na które sam natrafiałem. Każdy pomysł rodzi się z frustracji i potrzeby: gdy czegoś brakuje, siadam i buduję. Moje aplikacje są proste, skupione na jednym zadaniu i dopracowane tak, żeby rzeczywiście ułatwiały życie.",
+      appBadge:     "Android · bezpłatna",
+      appTagline:   "Koniec z niezdecydowaniem.",
+      appDesc:      "Suggestio Mio to aplikacja do losowego wyboru — idealna, gdy nie możesz się zdecydować co zjeść, jaki film obejrzeć albo co zrobić wieczorem. Tworzysz własne zestawy opcji, a aplikacja losuje za Ciebie. Możesz dyktować opcje głosem, ustawiać blokadę kolejnego losowania, przeglądać historię wyników i korzystać z ponad 25 gotowych szablonów w wielu kategoriach.",
+      featuresLabel:"FUNKCJE",
+      features:     ["Losowanie z animacją","Dyktowanie głosem","Historia wyników","Blokada czasowa","25+ szablonów","Wibracje i dźwięk","Backup JSON","Tryb ciemny"],
+      playText:     "Pobierz w Google Play",
+      playHref:     "https://play.google.com/store/apps/details?id=com.gregoriovisocchi.suggestio_mio&hl=pl",
+      lblEmail:     "e-mail",
+      lblStore:     "sklep",
+      footer:       "Proste aplikacje. Prawdziwe problemy. Realne rozwiązania.",
+    },
+    en: {
+      devSub:       "INDEPENDENT MOBILE APP DEVELOPER\nFlutter · Android · Google Play",
+      devBio:       "I build mobile apps that solve real, everyday problems — the kind I run into myself. Every idea starts with frustration and necessity: when something is missing, I sit down and build it. My apps are simple, focused on a single task, and polished enough to genuinely make life easier.",
+      appBadge:     "Android · free",
+      appTagline:   "Stop overthinking. Just pick.",
+      appDesc:      "Suggestio Mio is a random-choice app — perfect for when you can't decide what to eat, what movie to watch, or what to do with your evening. Create your own option sets and let the app decide for you. You can dictate options by voice, set a draw lock timer, browse your draw history, and choose from over 25 built-in templates across multiple categories.",
+      featuresLabel:"FEATURES",
+      features:     ["Animated draw","Voice input","Draw history","Time lock","25+ templates","Haptics & sound","JSON backup","Dark theme"],
+      playText:     "Get it on Google Play",
+      playHref:     "https://play.google.com/store/apps/details?id=com.gregoriovisocchi.suggestio_mio&hl=en",
+      lblEmail:     "email",
+      lblStore:     "store",
+      footer:       "Simple apps. Real problems. Real solutions.",
+    },
+    fr: {
+      devSub:       "DÉVELOPPEUR D'APPLICATIONS MOBILES INDÉPENDANT\nFlutter · Android · Google Play",
+      devBio:       "Je crée des applications mobiles qui résolvent de vrais problèmes du quotidien — ceux que je rencontre moi-même. Chaque idée naît d'une frustration et d'un besoin : quand quelque chose manque, je m'assieds et je construis. Mes applications sont simples, centrées sur une seule tâche et suffisamment soignées pour faciliter réellement la vie.",
+      appBadge:     "Android · gratuite",
+      appTagline:   "Fini l'indécision.",
+      appDesc:      "Suggestio Mio est une application de choix aléatoire — idéale quand vous n'arrivez pas à décider quoi manger, quel film regarder ou comment passer votre soirée. Créez vos propres ensembles d'options et laissez l'application choisir pour vous. Vous pouvez dicter les options à la voix, définir un verrouillage temporel, consulter l'historique des tirages et utiliser plus de 25 modèles prêts à l'emploi.",
+      featuresLabel:"FONCTIONNALITÉS",
+      features:     ["Tirage animé","Saisie vocale","Historique","Verrouillage temporel","25+ modèles","Vibration & son","Sauvegarde JSON","Thème sombre"],
+      playText:     "Disponible sur Google Play",
+      playHref:     "https://play.google.com/store/apps/details?id=com.gregoriovisocchi.suggestio_mio&hl=fr",
+      lblEmail:     "e-mail",
+      lblStore:     "boutique",
+      footer:       "Apps simples. Vrais problèmes. Vraies solutions.",
+    },
+    de: {
+      devSub:       "UNABHÄNGIGER MOBILE-APP-ENTWICKLER\nFlutter · Android · Google Play",
+      devBio:       "Ich entwickle mobile Apps, die echte Alltagsprobleme lösen — solche, auf die ich selbst stoße. Jede Idee beginnt mit Frustration und Notwendigkeit: Wenn etwas fehlt, setze ich mich hin und baue es. Meine Apps sind einfach, auf eine einzige Aufgabe fokussiert und so ausgefeilt, dass sie das Leben wirklich erleichtern.",
+      appBadge:     "Android · kostenlos",
+      appTagline:   "Schluss mit Unentschlossenheit.",
+      appDesc:      "Suggestio Mio ist eine App für zufällige Entscheidungen — perfekt, wenn Sie nicht entscheiden können, was Sie essen, welchen Film Sie ansehen oder was Sie abends unternehmen sollen. Erstellen Sie eigene Optionssets und lassen Sie die App für Sie entscheiden. Sie können Optionen per Sprache eingeben, eine Zeitsperre setzen, den Verlauf einsehen und aus über 25 vorgefertigten Vorlagen wählen.",
+      featuresLabel:"FUNKTIONEN",
+      features:     ["Animierte Ziehung","Spracheingabe","Ziehungsverlauf","Zeitsperre","25+ Vorlagen","Vibration & Ton","JSON-Backup","Dunkles Design"],
+      playText:     "Bei Google Play herunterladen",
+      playHref:     "https://play.google.com/store/apps/details?id=com.gregoriovisocchi.suggestio_mio&hl=de",
+      lblEmail:     "E-Mail",
+      lblStore:     "Store",
+      footer:       "Einfache Apps. Echte Probleme. Echte Lösungen.",
+    },
+    es: {
+      devSub:       "DESARROLLADOR INDEPENDIENTE DE APPS MÓVILES\nFlutter · Android · Google Play",
+      devBio:       "Creo aplicaciones móviles que resuelven problemas cotidianos reales — los mismos con los que yo me encuentro. Cada idea nace de la frustración y la necesidad: cuando algo falta, me siento y lo construyo. Mis apps son simples, enfocadas en una sola tarea y lo suficientemente cuidadas para facilitar la vida de verdad.",
+      appBadge:     "Android · gratuita",
+      appTagline:   "Deja de dudar. Elige ya.",
+      appDesc:      "Suggestio Mio es una app de elección aleatoria — perfecta cuando no puedes decidir qué comer, qué película ver o qué hacer por la noche. Crea tus propios conjuntos de opciones y deja que la app decida por ti. Puedes dictar opciones por voz, establecer un bloqueo temporal, consultar el historial de sorteos y usar más de 25 plantillas prediseñadas.",
+      featuresLabel:"FUNCIONES",
+      features:     ["Sorteo animado","Entrada de voz","Historial","Bloqueo temporal","25+ plantillas","Vibración y sonido","Copia JSON","Tema oscuro"],
+      playText:     "Consíguelo en Google Play",
+      playHref:     "https://play.google.com/store/apps/details?id=com.gregoriovisocchi.suggestio_mio&hl=es",
+      lblEmail:     "correo",
+      lblStore:     "tienda",
+      footer:       "Apps simples. Problemas reales. Soluciones reales.",
+    },
+    pt: {
+      devSub:       "DESENVOLVEDOR INDEPENDENTE DE APPS MÓVEIS\nFlutter · Android · Google Play",
+      devBio:       "Crio aplicativos móveis que resolvem problemas reais do dia a dia — os mesmos que eu mesmo enfrento. Cada ideia nasce da frustração e da necessidade: quando algo falta, sento e construo. Meus apps são simples, focados em uma única tarefa e polidos o suficiente para realmente facilitar a vida.",
+      appBadge:     "Android · gratuito",
+      appTagline:   "Chega de indecisão.",
+      appDesc:      "Suggestio Mio é um app de escolha aleatória — perfeito quando você não consegue decidir o que comer, qual filme assistir ou o que fazer à noite. Crie seus próprios conjuntos de opções e deixe o app decidir por você. Você pode ditar opções por voz, definir um bloqueio de tempo, consultar o histórico de sorteios e usar mais de 25 modelos prontos.",
+      featuresLabel:"FUNCIONALIDADES",
+      features:     ["Sorteio animado","Entrada de voz","Histórico","Bloqueio temporal","25+ modelos","Vibração e som","Backup JSON","Tema escuro"],
+      playText:     "Disponível no Google Play",
+      playHref:     "https://play.google.com/store/apps/details?id=com.gregoriovisocchi.suggestio_mio&hl=pt",
+      lblEmail:     "e-mail",
+      lblStore:     "loja",
+      footer:       "Apps simples. Problemas reais. Soluções reais.",
+    },
+    it: {
+      devSub:       "SVILUPPATORE INDIPENDENTE DI APP MOBILI\nFlutter · Android · Google Play",
+      devBio:       "Creo applicazioni mobili che risolvono problemi quotidiani reali — gli stessi che incontro io stesso. Ogni idea nasce da una frustrazione e da una necessità: quando manca qualcosa, mi siedo e lo costruisco. Le mie app sono semplici, concentrate su un unico compito e curate abbastanza da semplificare davvero la vita.",
+      appBadge:     "Android · gratuita",
+      appTagline:   "Basta indecisioni.",
+      appDesc:      "Suggestio Mio è un'app per la scelta casuale — ideale quando non riesci a decidere cosa mangiare, quale film guardare o come trascorrere la serata. Crea i tuoi set di opzioni e lascia che l'app decida per te. Puoi dettare le opzioni con la voce, impostare un blocco temporale, consultare la cronologia delle estrazioni e scegliere tra oltre 25 modelli predefiniti.",
+      featuresLabel:"FUNZIONALITÀ",
+      features:     ["Estrazione animata","Dettatura vocale","Cronologia","Blocco temporale","25+ modelli","Vibrazione e suono","Backup JSON","Tema scuro"],
+      playText:     "Scarica su Google Play",
+      playHref:     "https://play.google.com/store/apps/details?id=com.gregoriovisocchi.suggestio_mio&hl=it",
+      lblEmail:     "e-mail",
+      lblStore:     "store",
+      footer:       "App semplici. Problemi reali. Soluzioni reali.",
+    },
+  };
+
+  function setLang(code) {
+    const d = data[code];
+
+    document.getElementById('dev-sub').innerText      = d.devSub;
+    document.getElementById('dev-bio').textContent    = d.devBio;
+    document.getElementById('app-badge').textContent  = d.appBadge;
+    document.getElementById('app-tagline').textContent= d.appTagline;
+    document.getElementById('app-desc').textContent   = d.appDesc;
+    document.getElementById('features-label').textContent = d.featuresLabel;
+
+    const featuresEl = document.getElementById('features');
+    featuresEl.innerHTML = '';
+    d.features.forEach(f => {
+      const tag = document.createElement('span');
+      tag.className = 'feature-tag';
+      tag.textContent = f;
+      featuresEl.appendChild(tag);
+    });
+
+    const btn = document.getElementById('play-btn');
+    btn.href = d.playHref;
+    document.getElementById('play-btn-text').textContent = d.playText;
+
+    document.getElementById('lbl-email').textContent  = d.lblEmail;
+    document.getElementById('lbl-store').textContent  = d.lblStore;
+    document.getElementById('footer-tagline').textContent = d.footer;
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.textContent.toLowerCase() === code);
+    });
+    document.documentElement.lang = code;
+  }
+
+  function toggleTheme() {
+    const isLight = document.body.classList.toggle('light');
+    document.getElementById('theme-btn').textContent = isLight ? '☾' : '☀';
+  }
+
+  setLang('pl');
+</script>
+</body>
+</html>
